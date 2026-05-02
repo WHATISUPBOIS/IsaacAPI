@@ -7,7 +7,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 // Registers Swagger services to generate API documentation
-builder.Services.AddSwaggerGen(); // Add this above the line below.
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ProjectDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))

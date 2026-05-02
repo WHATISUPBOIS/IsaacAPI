@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IsaacAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20260417012213_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260502030350_BaseCharacter")]
+    partial class BaseCharacter
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,7 +23,7 @@ namespace IsaacAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Character", b =>
+            modelBuilder.Entity("BaseCharacter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,14 +31,18 @@ namespace IsaacAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("Damage")
+                    b.Property<double>("BaseDamage")
                         .HasColumnType("float");
 
-                    b.Property<double>("FireRate")
+                    b.Property<double>("DamageMult")
                         .HasColumnType("float");
 
                     b.Property<double>("Luck")
                         .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Range")
                         .HasColumnType("float");
@@ -49,12 +53,15 @@ namespace IsaacAPI.Migrations
                     b.Property<double>("Speed")
                         .HasColumnType("float");
 
+                    b.Property<double>("TearsUp")
+                        .HasColumnType("float");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Characters");
+                    b.ToTable("BaseCharacters");
                 });
 
-            modelBuilder.Entity("Item", b =>
+            modelBuilder.Entity("Character", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,7 +69,7 @@ namespace IsaacAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CharacterId")
+                    b.Property<int>("BaseCharacterId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -71,9 +78,63 @@ namespace IsaacAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BaseCharacterId");
+
+                    b.ToTable("Characters");
+                });
+
+            modelBuilder.Entity("Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CharacterId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("DamageMult")
+                        .HasColumnType("float");
+
+                    b.Property<double>("DamageUp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("FireRateUp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("LuckUp")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("RangeUp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("ShotSpeedUp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("SpeedUp")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TearsUp")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
                     b.HasIndex("CharacterId");
 
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("Character", b =>
+                {
+                    b.HasOne("BaseCharacter", "BaseCharacter")
+                        .WithMany()
+                        .HasForeignKey("BaseCharacterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BaseCharacter");
                 });
 
             modelBuilder.Entity("Item", b =>

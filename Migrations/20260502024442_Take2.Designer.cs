@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IsaacAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    partial class ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502024442_Take2")]
+    partial class Take2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +30,6 @@ namespace IsaacAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<double>("BaseDamage")
-                        .HasColumnType("float");
 
                     b.Property<double>("DamageMult")
                         .HasColumnType("float");
@@ -50,12 +50,12 @@ namespace IsaacAPI.Migrations
                     b.Property<double>("Speed")
                         .HasColumnType("float");
 
-                    b.Property<double>("TearsUp")
+                    b.Property<double>("Tears")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseCharacters");
+                    b.ToTable("BaseCharacter");
                 });
 
             modelBuilder.Entity("Character", b =>
@@ -66,16 +66,16 @@ namespace IsaacAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("BaseCharacterId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("baseCharacterId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("BaseCharacterId");
+                    b.HasIndex("baseCharacterId");
 
                     b.ToTable("Characters");
                 });
@@ -125,13 +125,13 @@ namespace IsaacAPI.Migrations
 
             modelBuilder.Entity("Character", b =>
                 {
-                    b.HasOne("BaseCharacter", "BaseCharacter")
+                    b.HasOne("BaseCharacter", "baseCharacter")
                         .WithMany()
-                        .HasForeignKey("BaseCharacterId")
+                        .HasForeignKey("baseCharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BaseCharacter");
+                    b.Navigation("baseCharacter");
                 });
 
             modelBuilder.Entity("Item", b =>
