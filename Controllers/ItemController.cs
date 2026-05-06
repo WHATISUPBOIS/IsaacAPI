@@ -27,7 +27,7 @@ public class ItemController: ControllerBase
     /// <summary>
     /// Returns a list of all items.
     /// </summary>
-    /// <returns>Did I stutter?</returns>
+    /// <returns></returns>
     [HttpGet("items", Name = "GetAllItems")]
     public List<Item> GetAllItems()
     {

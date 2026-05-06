@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IsaacAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    partial class ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260506181705_ItemCharacterFix")]
+    partial class ItemCharacterFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,13 +85,13 @@ namespace IsaacAPI.Migrations
 
             modelBuilder.Entity("CharacterItem", b =>
                 {
-                    b.Property<int>("CharacterId")
+                    b.Property<int>("CharactersId")
                         .HasColumnType("int");
 
                     b.Property<int>("ItemsId")
                         .HasColumnType("int");
 
-                    b.HasKey("CharacterId", "ItemsId");
+                    b.HasKey("CharactersId", "ItemsId");
 
                     b.HasIndex("ItemsId");
 
@@ -152,7 +155,7 @@ namespace IsaacAPI.Migrations
                 {
                     b.HasOne("Character", null)
                         .WithMany()
-                        .HasForeignKey("CharacterId")
+                        .HasForeignKey("CharactersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

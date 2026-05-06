@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IsaacAPI.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    partial class ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260506174544_ItemDescription")]
+    partial class ItemDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,24 +83,12 @@ namespace IsaacAPI.Migrations
                     b.ToTable("Characters");
                 });
 
-            modelBuilder.Entity("CharacterItem", b =>
-                {
-                    b.Property<int>("CharacterId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CharacterId", "ItemsId");
-
-                    b.HasIndex("ItemsId");
-
-                    b.ToTable("CharacterItem");
-                });
-
             modelBuilder.Entity("Item", b =>
                 {
                     b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CharacterId")
                         .HasColumnType("int");
 
                     b.Property<double>("DamageMult")
@@ -134,6 +125,8 @@ namespace IsaacAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CharacterId");
+
                     b.ToTable("Items");
                 });
 
@@ -148,19 +141,16 @@ namespace IsaacAPI.Migrations
                     b.Navigation("BaseCharacter");
                 });
 
-            modelBuilder.Entity("CharacterItem", b =>
+            modelBuilder.Entity("Item", b =>
                 {
                     b.HasOne("Character", null)
-                        .WithMany()
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany("Items")
+                        .HasForeignKey("CharacterId");
+                });
 
-                    b.HasOne("Item", null)
-                        .WithMany()
-                        .HasForeignKey("ItemsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+            modelBuilder.Entity("Character", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }
