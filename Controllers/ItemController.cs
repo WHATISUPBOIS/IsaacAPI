@@ -7,51 +7,42 @@ using Microsoft.AspNetCore.Mvc;
 [Route("items")]
 public class ItemController: ControllerBase
 {
-    private IIsaacRepository isaacRepository;
+    // Use the service layer to deal with logic and data stuff.
+    private IsaacService isaacService;
 
-    public ItemController(IIsaacRepository repository)
+    public ItemController(IsaacService service)
     {
-        isaacRepository = repository;
+        isaacService = service;
     }
 
     [HttpGet("{id}", Name = "GetItemById")]
     public Item? GetItemById(int id)
     {
-        return isaacRepository.GetItemById(id);
+        return isaacService.GetItemById(id);
     }
 
     [HttpGet("", Name = "GetAllItems")]
     public List<Item> GetAllItems()
     {
-        return isaacRepository.GetAllItems();
+        return isaacService.GetAllItems();
     }
 
     [HttpPost("", Name = "CreateItem")]
     public Item CreateItem(ItemCreateRequest request)
     {
-        // Map request to item we are creating.
-        Item item = new Item
+        if(!ModelState.IsValid)
         {
-            Id = request.Id,
-            Name = request.Name,
-            Description = request.Description,
-            SpeedUp = request.SpeedUp,
-            DamageUp = request.DamageUp,
-            DamageMult = request.DamageMult,
-            TearsUp = request.TearsUp,
-            FireRateUp = request.FireRateUp,
-            RangeUp = request.RangeUp,
-            ShotSpeedUp = request.ShotSpeedUp,
-            LuckUp = request.LuckUp
-        };
-        
-        return isaacRepository.CreateItem(item);
+            throw new InvalidInputException("Item Create request is invalid: ", ModelState);
+        }
+        else
+        {
+            return isaacService.CreateItem(request);
+        }
     }
 
     [HttpDelete("", Name = "DeleteItemById")]
     public void DeleteItemById(int id)
     {
-        Item item = isaacRepository.GetItemById(id);
-        isaacRepository.DeleteItem(item);
+        isaacService.DeleteItemById(id);
     }
 }

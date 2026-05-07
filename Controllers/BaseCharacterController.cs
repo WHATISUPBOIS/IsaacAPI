@@ -7,48 +7,43 @@ using Microsoft.AspNetCore.Mvc;
 [Route("base-characters")]
 public class BaseCharacterController: ControllerBase
 {
-    private IIsaacRepository isaacRepository;
+    // Use the service layer to deal with logic and data stuff.
+    private IsaacService isaacService;
 
-    public BaseCharacterController(IIsaacRepository repository)
+    public BaseCharacterController(IsaacService service)
     {
-        isaacRepository = repository;
+        isaacService = service;
     }
 
     [HttpGet("", Name = "GetAllBaseCharacters")]
     public List<BaseCharacter> GetAllBaseCharacters()
     {
-        return isaacRepository.GetAllBaseCharacters();
+        return isaacService.GetAllBaseCharacters();
     }
 
     [HttpGet("{id}", Name = "GetBaseCharacterById")]
     public BaseCharacter? GetBaseCharacterById(int id)
     {
-        return isaacRepository.GetBaseCharacterById(id);
+        return isaacService.GetBaseCharacterById(id);
     }
 
     [HttpPost("", Name = "CreateBaseCharacter")]
     public BaseCharacter CreateBaseCharacter(BaseCharacterCreateRequest request)
     {
-        // Map request to the base character we are creating.
-        BaseCharacter baseCharacter = new BaseCharacter
+        if(!ModelState.IsValid)
         {
-            Name = request.Name,
-            Speed = request.Speed,
-            TearsUp = request.TearsUp,
-            BaseDamage = request.BaseDamage,
-            DamageMult = request.DamageMult,
-            Range = request.Range,
-            ShotSpeed = request.ShotSpeed,
-            Luck = request.Luck
-        };
-
-        return isaacRepository.CreateBaseCharacter(baseCharacter);
+            throw new InvalidInputException("Base Character create request is invalid: ", ModelState);
+        }
+        else
+        {
+            return isaacService.CreateBaseCharacter(request);
+        }
+        
     }
 
     [HttpDelete("", Name = "DeleteBaseCharacterById")]
     public void DeleteBaseCharacterById(int id)
     {
-        BaseCharacter baseCharacter = isaacRepository.GetBaseCharacterById(id);
-        isaacRepository.DeleteBaseCharacter(baseCharacter);
+        isaacService.DeleteBaseCharacterById(id);
     }
 }

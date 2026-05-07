@@ -2,8 +2,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers();
+// Adds our Controllers to our container and configures our [ApiController] behavior.
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+    {
+        // Don't automatically validate request bodies, as we will do our own validation.
+        options.SuppressModelStateInvalidFilter = true;
+    }
+);
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 // Registers Swagger services to generate API documentation
@@ -15,6 +21,10 @@ builder.Services.AddDbContext<ProjectDbContext>(
 
 // If something requires the IIsaacRepository interface, supply IsaacRepositoryEfImpl class.
 builder.Services.AddScoped<IIsaacRepository, IsaacRepositoryEfImpl>();
+builder.Services.AddScoped<IsaacService>();
+
+// Exception handler.
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 var app = builder.Build();
 
@@ -31,5 +41,8 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+// Actually use the exception handler please.
+app.UseExceptionHandler(_ => { });
 
 app.Run();

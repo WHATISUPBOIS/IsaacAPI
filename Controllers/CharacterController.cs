@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
@@ -7,44 +8,50 @@ using Microsoft.AspNetCore.Mvc;
 [Route("characters")]
 public class CharacterController: ControllerBase
 {
-    private IIsaacRepository isaacRepository;
+    // Use the service layer to deal with logic and data stuff.
+    private IsaacService isaacService;
 
-    public CharacterController(IIsaacRepository repository)
+    public CharacterController(IsaacService service)
     {
-        isaacRepository = repository;
+        isaacService = service;
     }
 
-    [HttpGet("{id}", Name = "GetCharacterByID")]
-    public Character? GetCharacterByID(int id)
+    [HttpGet("{id}", Name = "GetCharacterById")]
+    public Character? GetCharacterById(int id)
     {
-        return isaacRepository.GetCharacterById(id);
+        return isaacService.GetCharacterById(id);
     }
 
     [HttpPost("", Name = "CreateCharacter")]
     public Character CreateCharacter(CharacterCreateRequest request)
     {
-        // Map request to character we are creating.
-        Character character = new Character
+        if(!ModelState.IsValid)
         {
-            Name = request.Name,
-            BaseCharacterId = request.BaseCharacterId
-        };
-
-        return isaacRepository.CreateCharacter(character);
+            throw new InvalidInputException("Character create request is invalid: ", ModelState);
+        }
+        else
+        {
+            return isaacService.CreateCharacter(request);
+        }
+        
     }
 
     [HttpPut("{charId}/items/{itemId}", Name = "AddItemToCharacter")]
-    public Character AddItemToCharacter(int charId, int itemId)
+    public Character AddItemToCharacter([Range(0, int.MaxValue)]int charId, [Range(0, int.MaxValue)] int itemId)
     {
-        Character updatedCharacter = isaacRepository.GetCharacterById(charId);
-        Item itemToAdd = isaacRepository.GetItemById(itemId);
-        return isaacRepository.AddItemToCharacter(updatedCharacter, itemToAdd);
+        if(!ModelState.IsValid)
+        {
+            throw new InvalidInputException("Character update request is invalid: ", ModelState);
+        }
+        else
+        {
+            return isaacService.AddItemToCharacter(charId, itemId);
+        }
     }
 
     [HttpDelete("", Name = "DeleteCharacterById")]
     public void DeleteCharacterById(int id)
     {
-        Character character = isaacRepository.GetCharacterById(id);
-        isaacRepository.DeleteCharacter(character);
+        isaacService.DeleteCharacterById(id);
     }
 }

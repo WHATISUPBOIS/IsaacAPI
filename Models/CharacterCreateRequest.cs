@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 /// <summary>
 /// Used to create a Character.
 /// </summary>
 public class CharacterCreateRequest
 {
-    public string Name { get; set; }
+    [Required]
+    public required string Name { get; set; }
+
+    [Required]
     public int BaseCharacterId { get; set; }
 }
