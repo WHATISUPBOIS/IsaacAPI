@@ -25,6 +25,12 @@ public interface IIsaacRepository
     /// <returns>The base character that is created.</returns>
     BaseCharacter CreateBaseCharacter(BaseCharacter baseCharacter);
 
+    /// <summary>
+    /// Delete a base character.
+    /// </summary>
+    /// <param name="baseCharacter">The base character to delete.</param>
+    void DeleteBaseCharacter(BaseCharacter baseCharacter);
+
     // -----Character-----
 
     /// <summary>
@@ -44,10 +50,16 @@ public interface IIsaacRepository
     /// <summary>
     /// Add an existing item to a character's list of items.
     /// </summary>
-    /// <param name="charId">ID of the character to be modified.</param>
-    /// <param name="itemId">ID of the item to be added.</param>
+    /// <param name="character">The character to be modified.</param>
+    /// <param name="item">The item to be added.</param>
     /// <returns>The modified character.</returns>
-    Character AddItemToCharacter(int charId, int itemId);
+    Character AddItemToCharacter(Character character, Item item);
+
+    /// <summary>
+    /// Delete a character.
+    /// </summary>
+    /// <param name="character">The character to delete.</param>
+    void DeleteCharacter(Character character);
 
     // -----Item-----
 
@@ -56,7 +68,7 @@ public interface IIsaacRepository
     /// </summary>
     /// <param name="id"></param>
     /// <returns>An item, if one is found.</returns>
-    Item? GetItemByID(int id);
+    Item? GetItemById(int id);
 
     /// <summary>
     /// Return a list of all items.
@@ -71,6 +83,10 @@ public interface IIsaacRepository
     /// <returns>The item that was created.</returns>
     Item CreateItem(Item item);
 
-
+    /// <summary>
+    /// Delete an item.
+    /// </summary>
+    /// <param name="item">The item to delete.</param>
+    void DeleteItem(Item item);
 
 }

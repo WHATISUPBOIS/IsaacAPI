@@ -29,6 +29,12 @@ public class IsaacRepositoryEfImpl : IIsaacRepository
         return baseCharacter;
     }
 
+    public void DeleteBaseCharacter(BaseCharacter baseCharacter)
+    {
+        projectDbContext.BaseCharacters.Remove(baseCharacter);
+        projectDbContext.SaveChanges();
+    }
+
     // -----Character-----
 
     public Character? GetCharacterById(int id)
@@ -44,18 +50,22 @@ public class IsaacRepositoryEfImpl : IIsaacRepository
         return character;
     }
 
-    public Character AddItemToCharacter(int charId, int itemId)
+    public Character AddItemToCharacter(Character character, Item item)
     {
-        Character updatedCharacter = projectDbContext.Characters.Find(charId);
-        Item itemToAdd = projectDbContext.Items.Find(itemId);
-        updatedCharacter.Items.Add(itemToAdd);
+        character.Items.Add(item);
         projectDbContext.SaveChanges();
-        return updatedCharacter;
+        return character;
+    }
+
+    public void DeleteCharacter(Character character)
+    {
+        projectDbContext.Characters.Remove(character);
+        projectDbContext.SaveChanges();
     }
 
     // -----Item-----
-    
-    public Item? GetItemByID(int id)
+
+    public Item? GetItemById(int id)
     {
         return projectDbContext.Items.Find(id);
     }
@@ -68,5 +78,11 @@ public class IsaacRepositoryEfImpl : IIsaacRepository
         projectDbContext.Items.Add(item);
         projectDbContext.SaveChanges();
         return item;
+    }
+
+    public void DeleteItem(Item item)
+    {
+        projectDbContext.Items.Remove(item);
+        projectDbContext.SaveChanges();
     }
 }

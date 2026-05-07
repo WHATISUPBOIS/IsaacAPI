@@ -36,6 +36,15 @@ public class CharacterController: ControllerBase
     [HttpPut("{charId}/items/{itemId}", Name = "AddItemToCharacter")]
     public Character AddItemToCharacter(int charId, int itemId)
     {
-        return isaacRepository.AddItemToCharacter(charId, itemId);
+        Character updatedCharacter = isaacRepository.GetCharacterById(charId);
+        Item itemToAdd = isaacRepository.GetItemById(itemId);
+        return isaacRepository.AddItemToCharacter(updatedCharacter, itemToAdd);
+    }
+
+    [HttpDelete("", Name = "DeleteCharacterById")]
+    public void DeleteCharacterById(int id)
+    {
+        Character character = isaacRepository.GetCharacterById(id);
+        isaacRepository.DeleteCharacter(character);
     }
 }

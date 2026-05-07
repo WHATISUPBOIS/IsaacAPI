@@ -14,32 +14,18 @@ public class ItemController: ControllerBase
         isaacRepository = repository;
     }
 
-    /// <summary>
-    /// Return info about the item under the specified ID.
-    /// </summary>
-    /// <param name="id">Yeah.</param>
-    /// <returns>An item, if one is found.</returns>
-    [HttpGet("{id}", Name = "GetItemByID")]
-    public Item? GetItemByID(int id)
+    [HttpGet("{id}", Name = "GetItemById")]
+    public Item? GetItemById(int id)
     {
-        return isaacRepository.GetItemByID(id);
+        return isaacRepository.GetItemById(id);
     }
 
-    /// <summary>
-    /// Returns a list of all items.
-    /// </summary>
-    /// <returns></returns>
     [HttpGet("", Name = "GetAllItems")]
     public List<Item> GetAllItems()
     {
         return isaacRepository.GetAllItems();
     }
 
-    /// <summary>
-    /// Create an item.
-    /// </summary>
-    /// <param name="request">Contains data used to create the item.</param>
-    /// <returns>The item that was created.</returns>
     [HttpPost("", Name = "CreateItem")]
     public Item CreateItem(ItemCreateRequest request)
     {
@@ -60,5 +46,12 @@ public class ItemController: ControllerBase
         };
         
         return isaacRepository.CreateItem(item);
+    }
+
+    [HttpDelete("", Name = "DeleteItemById")]
+    public void DeleteItemById(int id)
+    {
+        Item item = isaacRepository.GetItemById(id);
+        isaacRepository.DeleteItem(item);
     }
 }

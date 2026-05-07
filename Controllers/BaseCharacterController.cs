@@ -44,4 +44,11 @@ public class BaseCharacterController: ControllerBase
 
         return isaacRepository.CreateBaseCharacter(baseCharacter);
     }
+
+    [HttpDelete("", Name = "DeleteBaseCharacterById")]
+    public void DeleteBaseCharacterById(int id)
+    {
+        BaseCharacter baseCharacter = isaacRepository.GetBaseCharacterById(id);
+        isaacRepository.DeleteBaseCharacter(baseCharacter);
+    }
 }
