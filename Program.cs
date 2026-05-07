@@ -13,6 +13,9 @@ builder.Services.AddDbContext<ProjectDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// If something requires the IIsaacRepository interface, supply IsaacRepositoryEfImpl class.
+builder.Services.AddScoped<IIsaacRepository, IsaacRepositoryEfImpl>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

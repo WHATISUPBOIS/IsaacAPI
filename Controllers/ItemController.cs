@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 /// Controller for Item HTTP requests.
 /// </summary>
 [ApiController]
+[Route("items")]
 public class ItemController: ControllerBase
 {
-    private ProjectDbContext projectDbContext;
+    private IIsaacRepository isaacRepository;
 
-    public ItemController(ProjectDbContext context)
+    public ItemController(IIsaacRepository repository)
     {
-        this.projectDbContext = context;
+        isaacRepository = repository;
     }
 
     /// <summary>
@@ -18,20 +19,20 @@ public class ItemController: ControllerBase
     /// </summary>
     /// <param name="id">Yeah.</param>
     /// <returns>An item, if one is found.</returns>
-    [HttpGet("items/{id}", Name = "GetItemByID")]
+    [HttpGet("{id}", Name = "GetItemByID")]
     public Item? GetItemByID(int id)
     {
-        return projectDbContext.Items.Find(id);
+        return isaacRepository.GetItemByID(id);
     }
 
     /// <summary>
     /// Returns a list of all items.
     /// </summary>
     /// <returns></returns>
-    [HttpGet("items", Name = "GetAllItems")]
+    [HttpGet("", Name = "GetAllItems")]
     public List<Item> GetAllItems()
     {
-        return projectDbContext.Items.ToList();
+        return isaacRepository.GetAllItems();
     }
 
     /// <summary>
@@ -39,9 +40,10 @@ public class ItemController: ControllerBase
     /// </summary>
     /// <param name="request">Contains data used to create the item.</param>
     /// <returns>The item that was created.</returns>
-    [HttpPost("items", Name = "PostItem")]
-    public Item PostItem(ItemCreateRequest request)
+    [HttpPost("", Name = "CreateItem")]
+    public Item CreateItem(ItemCreateRequest request)
     {
+        // Map request to item we are creating.
         Item item = new Item
         {
             Id = request.Id,
@@ -56,8 +58,7 @@ public class ItemController: ControllerBase
             ShotSpeedUp = request.ShotSpeedUp,
             LuckUp = request.LuckUp
         };
-        projectDbContext.Items.Add(item);
-        projectDbContext.SaveChanges();
-        return item;
+        
+        return isaacRepository.CreateItem(item);
     }
 }

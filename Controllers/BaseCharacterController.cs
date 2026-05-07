@@ -4,33 +4,32 @@ using Microsoft.AspNetCore.Mvc;
 /// Controller for Base Character HTTP requests.
 /// </summary>
 [ApiController]
+[Route("base-characters")]
 public class BaseCharacterController: ControllerBase
 {
-    private ProjectDbContext projectDbContext;
+    private IIsaacRepository isaacRepository;
 
-    public BaseCharacterController(ProjectDbContext context)
+    public BaseCharacterController(IIsaacRepository repository)
     {
-        this.projectDbContext = context;
+        isaacRepository = repository;
     }
 
-    /// <summary>
-    /// Return a list of all base characters.
-    /// </summary>
-    /// <returns></returns>
-    [HttpGet("base-characters", Name = "GetAllBaseCharacters")]
+    [HttpGet("", Name = "GetAllBaseCharacters")]
     public List<BaseCharacter> GetAllBaseCharacters()
     {
-        return projectDbContext.BaseCharacters.ToList();
+        return isaacRepository.GetAllBaseCharacters();
     }
 
-    /// <summary>
-    /// Create a base character
-    /// </summary>
-    /// <param name="request">Contains data used to create the base character.</param>
-    /// <returns>The base character that is created.</returns>
-    [HttpPost("base-characters", Name = "CreateBaseCharacter")]
+    [HttpGet("{id}", Name = "GetBaseCharacterById")]
+    public BaseCharacter? GetBaseCharacterById(int id)
+    {
+        return isaacRepository.GetBaseCharacterById(id);
+    }
+
+    [HttpPost("", Name = "CreateBaseCharacter")]
     public BaseCharacter CreateBaseCharacter(BaseCharacterCreateRequest request)
     {
+        // Map request to the base character we are creating.
         BaseCharacter baseCharacter = new BaseCharacter
         {
             Name = request.Name,
@@ -43,8 +42,6 @@ public class BaseCharacterController: ControllerBase
             Luck = request.Luck
         };
 
-        projectDbContext.BaseCharacters.Add(baseCharacter);
-        projectDbContext.SaveChanges();
-        return baseCharacter;
+        return isaacRepository.CreateBaseCharacter(baseCharacter);
     }
 }
